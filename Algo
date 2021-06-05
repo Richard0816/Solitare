@@ -1,0 +1,959 @@
+import operator
+import time
+
+import numpy as np
+import pyautogui
+
+# low 870
+# high 786
+
+order = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', '0']
+threshorder = ['5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+final = [0, 0, 0, 0]
+prime_row = [1, 2, 3, 4, 5, 6, 7]
+# starts at (left=385, top=342)
+# each blank card is 18 pixels down
+# shown cards is 55 pixels down
+# left of each card: 385, 554, 723, 892, 1061, 1230, 1399
+shown_row = [1, 1, 1, 1, 1, 1, 1]
+
+
+def what_card(n):
+    if pyautogui.locate('A Red.png', n, confidence=0.8):
+        return 'A'
+    elif pyautogui.locate('2 Red.png', n, confidence=0.9):
+        return '2'
+    elif pyautogui.locate('K Red.png', n, confidence=0.9):
+        return 'K'
+    elif pyautogui.locate('Q Red.png', n, confidence=0.9):
+        return 'Q'
+    elif pyautogui.locate('10 Red.png', n, confidence=0.9):
+        return '10'
+    elif pyautogui.locate('3 Red.png', n, confidence=0.9):
+        return '3'
+    elif pyautogui.locate('4 Red.png', n, confidence=0.9):
+        return '4'
+    elif pyautogui.locate('5 Red.png', n, confidence=0.8):
+        return '5'
+    elif pyautogui.locate('6 Red.png', n, confidence=0.8):
+        return '6'
+    elif pyautogui.locate('7 Red.png', n, confidence=0.9):
+        return '7'
+    elif pyautogui.locate('8 Red.png', n, confidence=0.8):
+        return '8'
+    elif pyautogui.locate('9 Red.png', n, confidence=0.8):
+        return '9'
+    elif pyautogui.locate('J Red.png', n, confidence=0.9):
+        return 'J'
+    elif pyautogui.locate('J Black.png', n, confidence=0.8):
+        return 'J'
+    elif pyautogui.locate('A Black.png', n, confidence=0.9):
+        return 'A'
+    elif pyautogui.locate('2 Black.png', n, confidence=0.9):
+        return '2'
+    elif pyautogui.locate('3 Black.png', n, confidence=0.9):
+        return '3'
+    elif pyautogui.locate('4 Black.png', n, confidence=0.9):
+        return '4'
+    elif pyautogui.locate('5 Black.png', n, confidence=0.9):
+        return '5'
+    elif pyautogui.locate('6 Black.png', n, confidence=0.9):
+        return '6'
+    elif pyautogui.locate('7 Black.png', n, confidence=0.9):
+        return '7'
+    elif pyautogui.locate('8 Black.png', n, confidence=0.9):
+        return '8'
+    elif pyautogui.locate('9 Black.png', n, confidence=0.9):
+        return '9'
+    elif pyautogui.locate('10 Black.png', n, confidence=0.9):
+        return '10'
+
+    elif pyautogui.locate('Q Black.png', n, confidence=0.9):
+        return 'Q'
+    elif pyautogui.locate('K Black.png', n, confidence=0.9):
+        return 'K'
+    else:
+        return 0
+
+
+def what_suit(n):
+    if pyautogui.locate('__Clubs.png', n, confidence=0.9):
+        return 2
+    elif pyautogui.locate('__Spades.png', n, confidence=0.8):
+        return 0
+    elif pyautogui.locate('__Hearts.png', n, confidence=0.8):
+        return 1
+    elif pyautogui.locate('__Diamonds.png', n, confidence=0.8):
+        return 3
+
+
+def sortfinal(n):
+    if what_suit(n) == 0:
+        pyautogui.click(958, 198)
+    elif what_suit(n) == 1:
+        pyautogui.click(1124, 198)
+    elif what_suit(n) == 2:
+        pyautogui.click(1295, 198)
+    elif what_suit(n) == 3:
+        pyautogui.click(1466, 198)
+    time.sleep(0.5)
+
+
+def sortfinalnew(n):
+    if n == 0:
+        pyautogui.click(958, 198)
+    elif n == 1:
+        pyautogui.click(1124, 198)
+    elif n == 2:
+        pyautogui.click(1295, 198)
+    elif n == 3:
+        pyautogui.click(1466, 198)
+    time.sleep(0.5)
+
+
+def move_king():
+    try:
+        return bottom_row.index('0')
+    except ValueError:
+        return False
+
+
+def check_to_move(n, a):
+    try:
+        arr = np.array(a)
+        if n == 'K':
+            for t in range(len(list(np.where(arr == order[order.index(n) + 1])[0]))):
+                if list(np.where(arr == order[order.index(n) + 1])[0])[t] == 0:
+                    return list(np.where(arr == order[order.index(n) + 1])[0])
+            return False
+        return list(np.where(arr == order[order.index(n) + 1])[0])
+    except ValueError:
+        return False
+
+
+def check_suit(a, b):
+    if a % 2 == 0 and b % 2 == 1:
+        return True
+    elif a % 2 == 1 and b % 2 == 0:
+        return True
+    else:
+        return False
+
+
+def MOVE(n):
+    if n == 0:
+        pyautogui.click(445, 409 + 18 * (numhid[0]))
+    elif n == 1:
+        pyautogui.click(617, 409 + 18 * (numhid[1]))
+    elif n == 2:
+        pyautogui.click(786, 409 + 18 * (numhid[2]))
+    elif n == 3:
+        pyautogui.click(957, 409 + 18 * (numhid[3]))
+    elif n == 4:
+        pyautogui.click(1125, 409 + 18 * (numhid[4]))
+    elif n == 5:
+        pyautogui.click(1295, 409 + 18 * (numhid[5]))
+    elif n == 6:
+        pyautogui.click(1465, 409 + 18 * (numhid[6]))
+
+
+def bottomcardis(n):
+    if 342 + (55 * (shown_row[n] - 1)) + (18 * (numhid[n])) < 782:
+        return 342 + (55 * (shown_row[n] - 1)) + (18 * (numhid[n]))
+    elif shown_row[n] == 10 and numhid[n] == 0:
+        return 814
+    elif shown_row[n] == 11 and numhid[n] == 0:
+        return 818
+    elif shown_row[n] == 12 and numhid[n] == 0:
+        return 823
+    elif shown_row[n] == 13 and numhid[n] == 0:
+        return 825
+    elif shown_row[n] == 9 and numhid[n] == 2:
+        return 809
+    elif shown_row[n] == 10 and numhid[n] == 2:
+        return 818
+    elif shown_row[n] == 11 and numhid[n] == 2:
+        return 824
+    elif shown_row[n] == 9 and numhid[n] == 2:
+        return 826
+    elif shown_row[n] == 10 and numhid[n] == 3:
+        return 819
+    elif shown_row[n] == 9 and numhid[n] == 4:
+        return 817
+    elif shown_row[n] == 10 and numhid[n] == 4:
+        return 821
+    elif shown_row[n] == 11 and numhid[n] == 4:
+        return 825
+    elif shown_row[n] == 12 and numhid[n] == 4:
+        return 829
+    elif shown_row[n] == 13 and numhid[n] == 4:
+        return 832
+    elif shown_row[n] == 8 and numhid[n] == 5:
+        return 811
+    elif shown_row[n] == 9 and numhid[n] == 5:
+        return 818
+    else:
+        return 342 + (55 * (shown_row[n] - 1)) + (18 * (numhid[n]))
+
+
+def redefbottom():
+    if what_card(pyautogui.screenshot(region=(385, bottomcardis(0), 27, 47))):
+        bottom_row[0] = what_card(
+            pyautogui.screenshot(region=(385, bottomcardis(0), 27, 47)))
+    elif prime_row[0] == 0:
+        bottom_row[0] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(554, bottomcardis(1), 27, 47))):
+        bottom_row[1] = what_card(
+            pyautogui.screenshot(region=(554, bottomcardis(1), 27, 47)))
+    elif prime_row[1] == 0:
+        bottom_row[1] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(723, bottomcardis(2), 30, 47))):
+        bottom_row[2] = what_card(
+            pyautogui.screenshot(region=(723, bottomcardis(2), 30, 47)))
+    elif prime_row[2] == 0:
+        bottom_row[2] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(892, bottomcardis(3), 30, 47))):
+        bottom_row[3] = what_card(
+            pyautogui.screenshot(region=(892, bottomcardis(3), 30, 47)))
+    elif prime_row[3] == 0:
+        bottom_row[3] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(1061, bottomcardis(4), 30, 47))):
+        bottom_row[4] = what_card(
+            pyautogui.screenshot(region=(1061, bottomcardis(4), 30, 47)))
+    elif prime_row[4] == 0:
+        bottom_row[4] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(1230, bottomcardis(5), 30, 47))):
+        bottom_row[5] = what_card(
+            pyautogui.screenshot(region=(1230, bottomcardis(5), 30, 47)))
+    elif prime_row[5] == 0:
+        bottom_row[5] = '0'
+
+    if what_card(
+            pyautogui.screenshot(region=(1399, bottomcardis(6), 30, 47))):
+        bottom_row[6] = what_card(
+            pyautogui.screenshot(region=(1399, bottomcardis(6), 30, 47)))
+    elif prime_row[6] == 0:
+        bottom_row[6] = '0'
+
+
+def redefbottomsuit():
+    if what_suit(pyautogui.screenshot(region=(385, bottomcardis(0), 27, 47))):
+        bottom_row_suit[0] = what_suit(
+            pyautogui.screenshot(region=(385, bottomcardis(0), 27, 47)))
+    elif prime_row[0] == 0:
+        bottom_row_suit[0] = '0'
+
+    if what_suit(pyautogui.screenshot(region=(554, bottomcardis(1), 27, 47))):
+        bottom_row_suit[1] = what_suit(
+            pyautogui.screenshot(region=(554, bottomcardis(1), 27, 47)))
+    elif prime_row[1] == 0:
+        bottom_row_suit[1] = '0'
+
+    if what_suit(
+            pyautogui.screenshot(region=(723, bottomcardis(2), 30, 47))):
+        bottom_row_suit[2] = what_suit(
+            pyautogui.screenshot(region=(723, bottomcardis(2), 30, 47)))
+    elif prime_row[2] == 0:
+        bottom_row_suit[2] = '0'
+
+    if what_suit(
+            pyautogui.screenshot(region=(892, bottomcardis(3), 30, 47))):
+        bottom_row_suit[3] = what_suit(
+            pyautogui.screenshot(region=(892, bottomcardis(3), 30, 47)))
+    elif prime_row[3] == 0:
+        bottom_row_suit[3] = '0'
+
+    if what_suit(
+            pyautogui.screenshot(region=(1061, bottomcardis(4), 30, 47))):
+        bottom_row_suit[4] = what_suit(
+            pyautogui.screenshot(region=(1061, bottomcardis(4), 30, 47)))
+    elif prime_row[4] == 0:
+        bottom_row_suit[4] = '0'
+
+    if what_suit(
+            pyautogui.screenshot(region=(1230, bottomcardis(5), 30, 47))):
+        bottom_row_suit[5] = what_suit(
+            pyautogui.screenshot(region=(1230, bottomcardis(5), 30, 47)))
+    elif prime_row[5] == 0:
+        bottom_row_suit[5] = '0'
+
+    if what_suit(
+            pyautogui.screenshot(region=(1399, bottomcardis(6), 30, 47))):
+        bottom_row_suit[6] = what_suit(
+            pyautogui.screenshot(region=(1399, bottomcardis(6), 30, 47)))
+    elif prime_row[6] == 0:
+        bottom_row_suit[6] = '0'
+
+
+while True:
+    if pyautogui.locate('ad.png', pyautogui.screenshot(region=(830, 996, 300, 50)), confidence=0.5, grayscale=True):
+        while not pyautogui.locate('X.png', pyautogui.screenshot(), grayscale=True, confidence=0.5):
+            time.sleep(5)
+        pyautogui.click(1884, 64)
+    order = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', '0']
+    threshorder = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    final = [0, 0, 0, 0]
+    prime_row = [1, 2, 3, 4, 5, 6, 7]
+    # starts at (left=385, top=342)
+    # each blank card is 18 pixels down
+    # shown cards is 55 pixels down
+    # left of each card: 385, 554, 723, 892, 1061, 1230, 1399
+    shown_row = [1, 1, 1, 1, 1, 1, 1]
+    finish = 0
+    skipmid = 0
+    numtimerepeat = 0
+    while final != [13, 13, 13, 13]:
+        sloved = pyautogui.screenshot(region=(554, 162, 122, 65))
+        if pyautogui.locate(sloved, 'solve.png', confidence=0.8):
+            break
+        numhid = list(map(operator.sub, prime_row, shown_row))
+        bottom_row = [0, 0, 0, 0, 0, 0, 0]
+        bottom_row_suit = [0, 0, 0, 0, 0, 0, 0]
+        goback = 0
+        redefbottom()
+        redefbottomsuit()
+        bottom_row = ['0' if x == 0 else x for x in bottom_row]
+        pyautogui.PAUSE = 0.5
+        print(bottom_row)
+
+        try:
+            card1 = pyautogui.screenshot(region=(612, 115, 24, 45))
+            if what_card(card1):
+                if order[final[what_suit(card1)]] == what_card(card1):
+                    pyautogui.click(615, 118)
+                    sortfinal(card1)
+                    final[what_suit(card1)] += 1
+                    skipmid = 0
+                    goback = 1
+                    print(final)
+
+            if not what_card(card1):
+                card2 = pyautogui.screenshot(region=(583, 115, 24, 45))
+                if what_card(card2):
+                    if order[final[what_suit(card2)]] == what_card(card2):
+                        pyautogui.click(586, 118)
+                        sortfinal(card2)
+                        final[what_suit(card2)] += 1
+                        skipmid = 0
+                        goback = 1
+                        print(final)
+
+                if not what_card(card2):
+                    card3 = pyautogui.screenshot(region=(555, 115, 24, 45))
+                    if what_card(card3):
+                        if order[final[what_suit(card3)]] == what_card(card3):
+                            pyautogui.click(558, 118)
+                            sortfinal(card3)
+                            final[what_suit(card3)] += 1
+                            skipmid = 0
+                            goback = 1
+                            print(final)
+            if goback == 1:
+                numtimerepeat = 0
+                continue
+        except TypeError:
+            pass
+        bottom_row = ['0' if x == 0 else x for x in bottom_row]
+        if skipmid == 0:
+            try:
+                exist1 = 0
+                if bottom_row[0]:
+                    if order[final[bottom_row_suit[0]]] == bottom_row[0]:
+                        pyautogui.click(389, bottomcardis(0) + 4)
+                        sortfinalnew(bottom_row_suit[0])
+                        final[bottom_row_suit[0]] += 1
+                        print(final)
+                        if shown_row[0] == 1 and prime_row[0] != 1:
+                            shown_row[0] = 1
+                        else:
+                            shown_row[0] -= 1
+                        prime_row[0] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist1 = 1
+                if exist1 == 0:
+                    bottom_row[0] = 0
+                    bottom_row_suit[0] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist2 = 0
+                if bottom_row[1]:
+                    if order[final[bottom_row_suit[1]]] == bottom_row[1]:
+                        pyautogui.click(558, bottomcardis(1) + 4)
+                        sortfinalnew(bottom_row_suit[1])
+                        final[bottom_row_suit[1]] += 1
+                        print(final)
+                        if shown_row[1] == 1 and prime_row[1] != 1:
+                            shown_row[1] = 1
+                        else:
+                            shown_row[1] -= 1
+                        prime_row[1] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist2 = 1
+                if exist2 == 0:
+                    bottom_row[1] = 0
+                    bottom_row_suit[1] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist3 = 0
+                if bottom_row[2]:
+                    if order[final[bottom_row_suit[2]]] == bottom_row[2]:
+                        pyautogui.click(727, bottomcardis(2) + 4)
+                        sortfinalnew(bottom_row_suit[2])
+                        final[bottom_row_suit[2]] += 1
+                        print(final)
+                        if shown_row[2] == 1 and prime_row[2] != 1:
+                            shown_row[2] = 1
+                        else:
+                            shown_row[2] -= 1
+                        prime_row[2] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist3 = 1
+                if exist3 == 0:
+                    bottom_row[2] = 0
+                    bottom_row_suit[2] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist4 = 0
+                if bottom_row[3]:
+                    if order[final[bottom_row_suit[3]]] == bottom_row[3]:
+                        pyautogui.click(896, bottomcardis(3) + 4)
+                        sortfinalnew(bottom_row_suit[3])
+                        final[bottom_row_suit[3]] += 1
+                        print(final)
+                        if shown_row[3] == 1 and prime_row[3] != 1:
+                            shown_row[3] = 1
+                        else:
+                            shown_row[3] -= 1
+                        prime_row[3] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist4 = 1
+                if exist4 == 0:
+                    bottom_row[3] = 0
+                    bottom_row_suit[3] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist5 = 0
+                if bottom_row[4]:
+                    if order[final[bottom_row_suit[4]]] == bottom_row[4]:
+                        pyautogui.click(1065, bottomcardis(4) + 4)
+                        sortfinalnew(bottom_row_suit[4])
+                        final[bottom_row_suit[4]] += 1
+                        print(final)
+                        if shown_row[4] == 1 and prime_row[4] != 1:
+                            shown_row[4] = 1
+                        else:
+                            shown_row[4] -= 1
+                        prime_row[4] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist5 = 1
+                if exist5 == 0:
+                    bottom_row[4] = 0
+                    bottom_row_suit[4] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist6 = 0
+                if bottom_row[5]:
+                    if order[final[bottom_row_suit[5]]] == bottom_row[5]:
+                        pyautogui.click(1234, bottomcardis(5) + 4)
+                        sortfinalnew(bottom_row_suit[5])
+                        final[bottom_row_suit[5]] += 1
+                        print(final)
+
+                        if shown_row[5] == 1 and prime_row[5] != 1:
+                            shown_row[5] = 1
+                        else:
+                            shown_row[5] -= 1
+                        prime_row[5] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist6 = 1
+                if exist6 == 0:
+                    bottom_row[5] = 0
+                    bottom_row_suit[5] = 0
+            except TypeError:
+                pass
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                exist7 = 0
+                if bottom_row[6]:
+                    if order[final[bottom_row_suit[6]]] == bottom_row[6]:
+                        pyautogui.click(1403, bottomcardis(6) + 4)
+                        sortfinalnew(bottom_row_suit[6])
+                        final[bottom_row_suit[6]] += 1
+                        print(final)
+                        if shown_row[6] == 1 and prime_row[6] != 1:
+                            shown_row[6] = 1
+                        else:
+                            shown_row[6] -= 1
+                        prime_row[6] -= 1
+                        numtimerepeat = 0
+                        continue
+                    exist7 = 1
+                if exist7 == 0:
+                    bottom_row[6] = 0
+                    bottom_row_suit[6] = 0
+            except TypeError:
+                pass
+            print(shown_row)
+            print(numhid)
+            print(prime_row)
+            bottom_row = ['0' if x == 0 else x for x in bottom_row]
+
+            try:
+                topshown1 = pyautogui.screenshot(region=(385, 342 + (18 * (numhid[0])), 27, 47))
+                if check_to_move(what_card(topshown1), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown1), bottom_row))):
+                        if check_suit(what_suit(topshown1),
+                                      bottom_row_suit[check_to_move(what_card(topshown1), bottom_row)[i]]) or what_card(
+                            topshown1) == 'K':
+                            pyautogui.click(389, 346 + (18 * (numhid[0])))
+                            MOVE(check_to_move(what_card(topshown1), bottom_row)[i])
+                            prime_row[0] -= shown_row[0]
+                            prime_row[check_to_move(what_card(topshown1), bottom_row)[i]] += shown_row[0]
+                            shown_row[check_to_move(what_card(topshown1), bottom_row)[i]] += shown_row[0]
+                            if prime_row[0] == 0:
+                                shown_row[0] = 0
+                            else:
+                                shown_row[0] = 1
+                            goback = 1
+                            bottom_row[check_to_move(what_card(topshown1), bottom_row)[i]] = bottom_row[0]
+                            top1 = pyautogui.screenshot(region=(385, bottomcardis(0), 27, 47))
+                            if what_card(top1):
+                                bottom_row[0] = what_card(top1)
+                            elif prime_row[0] == 0:
+                                bottom_row[0] = '0'
+                            if what_suit(top1):
+                                bottom_row_suit[0] = what_suit(top1)
+                            elif prime_row[0] == 0:
+                                bottom_row_suit[0] = '0'
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+
+            except TypeError:
+                pass
+
+            try:
+                topshown2 = pyautogui.screenshot(region=(554, 342 + (18 * (numhid[1])), 27, 47))
+                if check_to_move(what_card(topshown2), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown2), bottom_row))):
+                        if check_suit(what_suit(topshown2),
+                                      bottom_row_suit[check_to_move(what_card(topshown2), bottom_row)[i]]):
+                            pyautogui.click(558, 346 + (18 * (numhid[1])))
+                            MOVE(check_to_move(what_card(topshown2), bottom_row)[i])
+                            prime_row[1] -= shown_row[1]
+                            prime_row[check_to_move(what_card(topshown2), bottom_row)[i]] += shown_row[1]
+                            shown_row[check_to_move(what_card(topshown2), bottom_row)[i]] += shown_row[1]
+                            if prime_row[1] == 0:
+                                shown_row[1] = 0
+                            else:
+                                shown_row[1] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            try:
+                topshown3 = pyautogui.screenshot(region=(723, 342 + (18 * (numhid[2])), 27, 47))
+                if check_to_move(what_card(topshown3), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown3), bottom_row))):
+                        if check_suit(what_suit(topshown3),
+                                      bottom_row_suit[check_to_move(what_card(topshown3), bottom_row)[i]]):
+                            pyautogui.click(727, 346 + (18 * (numhid[2])))
+                            MOVE(check_to_move(what_card(topshown3), bottom_row)[i])
+                            prime_row[2] -= shown_row[2]
+                            prime_row[check_to_move(what_card(topshown3), bottom_row)[i]] += shown_row[2]
+                            shown_row[check_to_move(what_card(topshown3), bottom_row)[i]] += shown_row[2]
+                            if prime_row[2] == 0:
+                                shown_row[2] = 0
+                            else:
+                                shown_row[2] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            try:
+                topshown4 = pyautogui.screenshot(region=(892, 342 + (18 * (numhid[3])), 27, 47))
+                if check_to_move(what_card(topshown4), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown4), bottom_row))):
+                        if check_suit(what_suit(topshown4),
+                                      bottom_row_suit[check_to_move(what_card(topshown4), bottom_row)[i]]):
+                            pyautogui.click(896, 346 + (18 * (numhid[3])))
+                            MOVE(check_to_move(what_card(topshown4), bottom_row)[i])
+                            prime_row[3] -= shown_row[3]
+                            prime_row[check_to_move(what_card(topshown4), bottom_row)[i]] += shown_row[3]
+                            shown_row[check_to_move(what_card(topshown4), bottom_row)[i]] += shown_row[3]
+                            if prime_row[3] == 0:
+                                shown_row[3] = 0
+                            else:
+                                shown_row[3] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            try:
+                topshown5 = pyautogui.screenshot(region=(1061, 342 + (18 * (numhid[4])), 27, 47))
+                if check_to_move(what_card(topshown5), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown5), bottom_row))):
+                        if check_suit(what_suit(topshown5),
+                                      bottom_row_suit[check_to_move(what_card(topshown5), bottom_row)[i]]):
+                            pyautogui.click(1065, 346 + (18 * (numhid[4])))
+                            MOVE(check_to_move(what_card(topshown5), bottom_row)[i])
+                            prime_row[4] -= shown_row[4]
+                            prime_row[check_to_move(what_card(topshown5), bottom_row)[i]] += shown_row[4]
+                            shown_row[check_to_move(what_card(topshown5), bottom_row)[i]] += shown_row[4]
+                            if prime_row[4] == 0:
+                                shown_row[4] = 0
+                            else:
+                                shown_row[4] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            try:
+                topshown6 = pyautogui.screenshot(region=(1230, 342 + (18 * (numhid[5])), 27, 47))
+                if check_to_move(what_card(topshown6), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown6), bottom_row))):
+                        if check_suit(what_suit(topshown6),
+                                      bottom_row_suit[check_to_move(what_card(topshown6), bottom_row)[i]]):
+                            pyautogui.click(1234, 346 + (18 * (numhid[5])))
+                            MOVE(check_to_move(what_card(topshown6), bottom_row)[i])
+                            prime_row[5] -= shown_row[5]
+                            prime_row[check_to_move(what_card(topshown6), bottom_row)[i]] += shown_row[5]
+                            shown_row[check_to_move(what_card(topshown6), bottom_row)[i]] += shown_row[5]
+                            if prime_row[5] == 0:
+                                shown_row[5] = 0
+                            else:
+                                shown_row[5] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            try:
+                topshown7 = pyautogui.screenshot(region=(1399, 342 + (18 * (numhid[6])), 27, 47))
+                print(what_card(topshown7))
+                if check_to_move(what_card(topshown7), bottom_row):
+                    for i in range(len(check_to_move(what_card(topshown7), bottom_row))):
+                        if check_suit(what_suit(topshown7),
+                                      bottom_row_suit[check_to_move(what_card(topshown7), bottom_row)[i]]):
+                            pyautogui.click(1403, 346 + (18 * (numhid[6])))
+                            MOVE(check_to_move(what_card(topshown7), bottom_row)[i])
+                            prime_row[6] -= shown_row[6]
+                            prime_row[check_to_move(what_card(topshown7), bottom_row)[i]] += shown_row[6]
+                            shown_row[check_to_move(what_card(topshown7), bottom_row)[i]] += shown_row[6]
+                            if prime_row[6] == 0:
+                                shown_row[6] = 0
+                            else:
+                                shown_row[6] = 1
+                            goback = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            break
+                if goback == 1:
+                    numtimerepeat = 0
+                    continue
+            except TypeError:
+                pass
+
+            c = list(np.where(np.array(bottom_row) == '0')[0])
+            if c:
+                for i in range(len(c)):
+                    if prime_row[c[i]] == 0:
+                        if what_card(topshown1) == 'K' and numhid[0] != 0 and MOVE(c[i]) != 0:
+                            pyautogui.click(558, 346 + (18 * (numhid[0])))
+                            MOVE(c[i])
+                            prime_row[0] -= shown_row[0]
+                            prime_row[bottom_row.index('0')] += shown_row[0]
+                            shown_row[bottom_row.index('0')] += shown_row[0]
+                            if prime_row[0] == 0:
+                                shown_row[0] = 0
+                            else:
+                                shown_row[0] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown2) == 'K' and numhid[1] != 0 and MOVE(c[i]) != 1:
+                            pyautogui.click(558, 346 + (18 * (numhid[1])))
+                            MOVE(c[i])
+                            prime_row[1] -= shown_row[1]
+                            prime_row[bottom_row.index('0')] += shown_row[1]
+                            shown_row[bottom_row.index('0')] += shown_row[1]
+                            if prime_row[1] == 0:
+                                shown_row[1] = 0
+                            else:
+                                shown_row[1] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown3) == 'K' and numhid[2] != 0 and MOVE(c[i]) != 2:
+                            pyautogui.click(727, 346 + (18 * (numhid[2])))
+                            MOVE(c[i])
+                            prime_row[2] -= shown_row[2]
+                            prime_row[bottom_row.index('0')] += shown_row[2]
+                            shown_row[bottom_row.index('0')] += shown_row[2]
+                            if prime_row[2] == 0:
+                                shown_row[2] = 0
+                            else:
+                                shown_row[2] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown4) == 'K' and numhid[3] != 0 and MOVE(c[i]) != 3:
+                            pyautogui.click(896, 346 + (18 * (numhid[3])))
+                            MOVE(c[i])
+                            prime_row[3] -= shown_row[3]
+                            prime_row[bottom_row.index('0')] += shown_row[3]
+                            shown_row[bottom_row.index('0')] += shown_row[3]
+                            if prime_row[3] == 0:
+                                shown_row[3] = 0
+                            else:
+                                shown_row[3] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown5) == 'K' and numhid[4] != 0 and MOVE(c[i]) != 4:
+                            pyautogui.click(1065, 346 + (18 * (numhid[4])))
+                            MOVE(c[i])
+                            prime_row[4] -= shown_row[4]
+                            prime_row[bottom_row.index('0')] += shown_row[4]
+                            shown_row[bottom_row.index('0')] += shown_row[4]
+                            if prime_row[4] == 0:
+                                shown_row[4] = 0
+                            else:
+                                shown_row[4] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown6) == 'K' and numhid[5] != 0 and MOVE(c[i]) != 5:
+                            pyautogui.click(1234, 346 + (18 * (numhid[5])))
+                            MOVE(c[i])
+                            prime_row[5] -= shown_row[5]
+                            prime_row[bottom_row.index('0')] += shown_row[5]
+                            shown_row[bottom_row.index('0')] += shown_row[5]
+                            if prime_row[5] == 0:
+                                shown_row[5] = 0
+                            else:
+                                shown_row[5] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+
+                        if what_card(topshown7) == 'K' and numhid[6] != 0 and MOVE(c[i]) != 6:
+                            pyautogui.click(1403, 346 + (18 * (numhid[6])))
+                            MOVE(c[i])
+                            prime_row[6] -= shown_row[6]
+                            prime_row[bottom_row.index('0')] += shown_row[6]
+                            shown_row[bottom_row.index('0')] += shown_row[6]
+                            if prime_row[6] == 0:
+                                shown_row[6] = 0
+                            else:
+                                shown_row[6] = 1
+                            redefbottom()
+                            redefbottomsuit()
+                            numtimerepeat = 0
+                            goback = 1
+                            break
+                if goback == 1:
+                    skipmid = 0
+                    numtimerepeat = 0
+                    continue
+
+        try:
+            if what_card(card1):
+                print(what_card(card1))
+                for i in range(len(check_to_move(what_card(card1), bottom_row))):
+                    if check_suit(what_suit(card1),
+                                  bottom_row_suit[check_to_move(what_card(card1), bottom_row)[i]]):
+                        if what_card(card1) in threshorder:
+                            pyautogui.click(615, 118)
+                            MOVE(check_to_move(what_card(card1), bottom_row)[i])
+                            prime_row[check_to_move(what_card(card1), bottom_row)[i]] += 1
+                            shown_row[check_to_move(what_card(card1), bottom_row)[i]] += 1
+                            print(bottom_row)
+                            goback = 1
+                            break
+            if goback == 1:
+                skipmid = 0
+                numtimerepeat = 0
+                continue
+            if not what_card(card1):
+                if what_card(card2):
+                    print(what_card(card2))
+                    for i in range(len(check_to_move(what_card(card2), bottom_row))):
+                        if check_suit(what_suit(card2),
+                                      bottom_row_suit[check_to_move(what_card(card2), bottom_row)[i]]):
+                            if what_card(card2) in threshorder:
+                                pyautogui.click(586, 118)
+                                MOVE(check_to_move(what_card(card2), bottom_row)[i])
+                                prime_row[check_to_move(what_card(card2), bottom_row)[i]] += 1
+                                shown_row[check_to_move(what_card(card2), bottom_row)[i]] += 1
+                                print(bottom_row)
+                                goback = 1
+                                break
+                if goback == 1:
+                    skipmid = 0
+                    numtimerepeat = 0
+                    continue
+
+                if not what_card(card2):
+                    if what_card(card3):
+                        for i in range(len(check_to_move(what_card(card3), bottom_row))):
+                            if check_suit(what_suit(card3),
+                                          bottom_row_suit[check_to_move(what_card(card3), bottom_row)[i]]):
+                                if what_card(card3) in threshorder:
+                                    pyautogui.click(558, 118)
+                                    MOVE(check_to_move(what_card(card3), bottom_row)[i])
+                                    prime_row[check_to_move(what_card(card3), bottom_row)[i]] += 1
+                                    shown_row[check_to_move(what_card(card3), bottom_row)[i]] += 1
+                                    print(bottom_row)
+                                    goback = 1
+                                    break
+                    if goback == 1:
+                        skipmid = 0
+                        numtimerepeat = 0
+                        continue
+
+        except TypeError:
+            pass
+
+        if numtimerepeat > 52 - (sum(final) + sum(prime_row)) + 1:
+            try:
+                if c:
+                    for i in range(len(c)):
+                        if prime_row[c[i]] == 0:
+                            if what_card(card1) == 'K':
+                                pyautogui.click(615, 118)
+                                MOVE(c[i])
+                                shown_row[c[i]] = 1
+                                prime_row[c[i]] = 1
+                                redefbottom()
+                                redefbottomsuit()
+                                skipmid = 0
+                                goback = 1
+                                break
+                            if not what_card(card1):
+                                if what_card(card2) == 'K':
+                                    pyautogui.click(586, 118)
+                                    MOVE(c[i])
+                                    shown_row[c[i]] = 1
+                                    prime_row[c[i]] = 1
+                                    redefbottom()
+                                    redefbottomsuit()
+                                    skipmid = 0
+                                    goback = 1
+                                    break
+                                if not what_card(card2):
+                                    if what_card(card3) == 'K':
+                                        pyautogui.click(558, 118)
+                                        MOVE(c[i])
+                                        shown_row[c[i]] = 1
+                                        prime_row[c[i]] = 1
+                                        redefbottom()
+                                        redefbottomsuit()
+                                        skipmid = 0
+                                        goback = 1
+                                        break
+                if goback == 1:
+                    continue
+            except ValueError:
+                pass
+        print(bottom_row)
+        skipmid = 1
+        numtimerepeat += 1
+        pyautogui.click(447, 193)
+
+    pyautogui.click(615, 194)
+
+    time.sleep(10)
+
+    if pyautogui.locate('OK2.png', pyautogui.screenshot(region=(937, 817, 52, 34))):
+        pyautogui.click(937, 817)
+        time.sleep(2)
+    if pyautogui.locate('New game.png', pyautogui.screenshot(region=(699, 830, 190, 52))):
+        pyautogui.click(794, 856)
+        time.sleep(10)
+        continue
+    if pyautogui.locate('OK.png', pyautogui.screenshot(region=(671, 601, 250, 48))):
+        pyautogui.click(796, 625)
+        time.sleep(1)
+        pyautogui.click(614, 854)
+        time.sleep(10)
+        continue
